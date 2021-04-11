@@ -1,0 +1,26 @@
+#!/usr/bin/env zsh
+
+function usage {
+    echo "Usage: $0 [upstream_repo]";
+    echo "";
+    exit 1;
+}
+
+if [[ ${1} == "" ]]
+then
+	usage
+fi
+
+LOCAL_REPO_DIR="/Volumes/grewal_T5/codebase/github"
+REMOTE_REPO=${1}
+MODULE=$(cut -d '/' -f2 <<< "${REMOTE_REPO}")
+
+cd ${LOCAL_REPO_DIR}
+hub clone --recursive ${REMOTE_REPO} 
+cd ${MODULE}
+hub fork
+git remote rename origin upstream
+git remote rename ${USER} origin
+git pull --all
+
+exit $?

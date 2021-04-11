@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# set -x
+
+source global_functions
+
+debug=
+# debug=echo
+
+SCRIPT_NAME=$(basename -- "$0")
+BASEDIR=$(dirname "$BASH_SOURCE")
+
+# RCLONE_FILE_LOCATION=/Volumes/grewal_T5/codebase/scripts/grewalr/rclone.dat
+RCLONE_FILE_LOCATION=${BASEDIR}/rclone.dat
+
+[ ! -f ${RCLONE_FILE_LOCATION} ] && logE "rclone file does not exist. Exiting..." ${LINENO} && exit 1
+
+# while IFS='|' read source
+# do
+#   logI "HERE"
+#   logI "${log} ${source} gdrive:${destination}"
+#   # rclone copy -v -c --transfers 5 --log-file ${log} ${source} gdrive:${destination}
+# done < ${RCLONE_FILE_LOCATION}
+
+while IFS='|' read src dest log
+do
+ logD "$src" ${LINENO}
+ logD "$dest" ${LINENO}
+ logD "$log" ${LINENO}
+ ${debug} rclone copy -v -c --transfers 5 --log-file ${log} --exclude '.*{/**,}' ${src} gdrive:${dest}
+done < ${RCLONE_FILE_LOCATION}
+
+# rclone -vv --dry-run --transfers=20 --checkers=10 --drive-chunk-size=512M copy /Users/grewalr/Pictures/RAW/BIRTHDAY/ARUNA gdrive:/tmp
+
+exit $?

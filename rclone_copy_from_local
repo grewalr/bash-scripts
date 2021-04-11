@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+rclone copy -v -c --transfers=5 --log-file /Users/grewalr/Documents/kjImages.log /Users/grewalr/Pictures/IMAGES/BIRTHDAY/KIERAN/ gdrive:/media/JPEG/birthday/kieran/2018/
+rclone copy -v -c --transfers=5 --log-file /Users/grewalr/Documents/kjRaw.log /Users/grewalr/Pictures/RAW/BIRTHDAY/KIERAN/ gdrive:/media/RAW/birthday/kieran/2018/
+rclone copy -v -c --transfers=5 --log-file /Users/grewalr/Documents/kjMov.log /Users/grewalr/Pictures/MOV/KIERAN/ gdrive:/media/MOV/birthday/kieran/2018/
+
+exit $?

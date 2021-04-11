@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+function usage() {
+  echo -ne "${SCRIPT_NAME} [OPTION]...
+
+rsync from source to destination.
+
+ ${bold}Options:${reset}
+  -s, --src   \tSource location
+  -d, --dest  \tDestination
+\n"
+  exit 1
+}
+
+function validate() {
+  while [[ $# -gt 0 ]]
+  do
+    option="${1}"
+
+    case ${option} in
+      -s|--src)
+        src="${2}"
+        shift 2
+      ;;
+      -d|--dest)
+        dest=${2}
+        shift 2
+      ;;
+      *)
+        shift
+        usage
+      ;;
+    esac
+  done
+
+  if [[ $src = 'X' ]] || [[ $dest = "X" ]]
+  then
+    usage
+  fi
+}
+
+SCRIPT_NAME=$(basename -- "$0")
+
+src=X
+dest=X
+
+validate $*
+
+SRC_LOCATION=${src}
+DEST_LOCATION=${dest}
+
+mkdir -p ${SRC_LOCATION}/logs
+
+rsync -ave ssh --exclude ".AppleDB" --exclude ".DS_Store" --exclude "._*" ${SRC_LOCATION} ${DEST_LOCATION} 2>&1 | tee ${SRC_LOCATION}/logs/transfer.log &

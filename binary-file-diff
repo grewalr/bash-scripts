@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+function usage() {
+  echo -ne "${SCRIPT_NAME} [OPTION]...
+
+This script binary diff files with the same name and deletes the old version if similar
+
+diff
+\n"
+  exit 1
+}
+
+SCRIPT_NAME=$(basename -- "$0")
+

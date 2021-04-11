@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+rclone copy -v -c --transfers 5 --log-file /home/grewalr/logs/RAW.log /mnt/RAW gdrive:/NAS/RAW
+rclone copy -v -c --transfers 5 --log-file /home/grewalr/logs/aruna.log /mnt/aruna gdrive:/NAS/aruna
+rclone copy -v -c --transfers 5 --log-file /home/grewalr/logs/backup.log /mnt/backup gdrive:/NAS/backup
+rclone copy -v -c --transfers 5 --log-file /home/grewalr/logs/images.log /mnt/images gdrive:/NAS/images
+rclone copy -v -c --transfers 5 --log-file /home/grewalr/logs/jeevan.log /mnt/jeevan gdrive:/NAS/jeevan
+rclone copy -v -c --transfers 5 --log-file /home/grewalr/logs/kieran.log /mnt/kieran gdrive:/NAS/kieran
+rclone copy -v -c --transfers 5 --log-file /home/grewalr/logs/ricky.log /mnt/ricky gdrive:/NAS/ricky
+rclone copy -v -c --transfers 5 --log-file /home/grewalr/logs/users.log /mnt/users gdrive:/NAS/users
+rclone copy -v -c --transfers 5 --log-file /home/grewalr/logs/weddingDvd.log /mnt/videos/Wedding_DVD gdrive:/NAS/videos/wedding/DVD
+rclone copy -v -c --transfers 5 --log-file /home/grewalr/logs/weddingIpad.log /mnt/videos/Wedding_V2 gdrive:/NAS/videos/wedding/iPad
+
+#for job in `jobs -p`
+#do
+#  echo $job
+#  wait $job  let "FAIL+=1"
+#done
+#
+#echo $FAIL
+#
+#if [ "$FAIL" == "0" ];
+#then
+#  echo "*** COMPLETED SUCCESSFULLY ***"
+#else
+#  echo "JOB FAILED : ($FAIL)"
+#fi
+
+exit $?

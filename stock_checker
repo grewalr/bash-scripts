@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# https://www.aldi.co.uk/gardenline-kamado-ceramic-egg-bbq/p/710081460879600
+
+PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:\
+/usr/sbin:\
+/sbin:\
+/usr/local/MacGPG2/bin:\
+/opt/X11/bin:/usr/local/opt/fzf/bin:$PATH
+
+RECIPIENTS="RickyGrewal8@gmail.com,grewalaruna@gmail.com"
+ALDI_URL=https://www.aldi.co.uk/api/product/availability/710081460879600
+PURCHASE_DISABLED=$(curl -s ${ALDI_URL} | \
+jq ".availabilityPanel" | \
+tr -d '\\n' | \
+sed "s@\\\\@@g" | \
+sed "s/\"//g" | \
+/usr/local/opt/grep/libexec/gnubin/grep -oP 'data-purchase-disabled=\s*\K\S+')
+
+[ ${PURCHASE_DISABLED} == 'true' ] || {
+  /usr/sbin/sendmail ${RECIPIENTS} <<EOF
+Subject:**IN STOCK** Gardenline Kamado Ceramic Egg BBQ
+From:ADMIN@grewal.aldi.stock
+
+!! NOW IN STOCK !! -- https://www.aldi.co.uk/gardenline-kamado-ceramic-egg-bbq/p/710081460879600
+EOF
+  [ $? -eq 0 ] && echo "MESSAGE SENT"
+}
+
+exit $?

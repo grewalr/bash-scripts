@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+
+function usage()
+{
+	echo -e "Usage: ${0} [options]
+		-n|--numberOfDays 	[days]					Number of days
+		-d|--dateToArchive	[yyyy-mm-dd]			Date to archive
+		-s|--sourceLocation	[/path/to/directory]	Source location of the files
+		-t|--targetLocation	[/path/to/directory]	Target location of the files
+		-u|--user 			[Kieran|Jeevan]			User"
+	exit -1
+}
+
+function log()
+{
+	echo "["$(date +%Y-%m-%d_%H:%M:%S)"][${1}] - ${2}"
+}
+
+#if [[ $# == 0 ]]
+#then
+#	usage
+#fi
+
+SCRIPT_NAME=$(basename ${0})
+NUMBER_OF_DAYS=60
+DATE_TO_ARCHIVE=X
+SOURCE_LOCATION=X
+TARGET_LOCATION=X
+USER=X
+
+while [[ $# > 0 ]]
+do
+	case "${1}" in
+		-n|--numberOfDays)
+			NUMBER_OF_DAYS=${2}
+			shift 2
+			;;
+		-d|--dateToArchive)
+			DATE_TO_ARCHIVE=${2}
+			shift 2
+			;;
+		-s|--sourceLocation)
+			SOURCE_LOCATION=${2}
+			shift 2
+			;;
+		-t|--targetLocation)
+			TARGET_LOCATION=${2}
+			shift 2
+			;;		
+		-u|--user)
+			USER=${2}
+			shift 2
+			;;
+		*)
+			log ${SCRIPT_NAME} "[ERROR] Unknown option"
+			usage
+			;;
+	esac
+done
+
+if [[ ${USER} == "Kieran" ]] || [[ ${USER} == "kieran" ]]
+then
+	log ${SCRIPT_NAME} "Running for Kieran"
+	SOURCE_LOCATION=/mnt/grewal/users/grewalr/Kieran_ipcamera
+	TARGET_LOCATION=/mnt/grewal/backup/CCTV/Kieran_ipcamera
+fi
+
+if [[ ${USER} == "Jeevan" ]] || [[ ${USER} == "jeevan" ]]
+then
+	log ${SCRIPT_NAME} "Running for Jeevan"
+	SOURCE_LOCATION=/mnt/grewal/users/grewalr/Jeevan_ipcamera
+	TARGET_LOCATION=/mnt/grewal/backup/CCTV/Jeevan_ipcamera
+fi
+
+
+if [[ ${SOURCE_LOCATION} == "X" ]] && [[ ${TARGET_LOCATION} == "X" ]]
+then
+	log ${SCRIPT_NAME} "[ERROR] Source and/or target location is not specififed"
+	usage
+fi
+
+# find . -type f -newermt $(date -v -7d '+%Y%m%d') ! -newermt $(date -v -6d '+%Y-%m-%d') -exec ls -l {} \;
+
+# find . -type f -newermt '2016-10-23' ! -newermt '2016-10-24' -exec ls -l {} \;
+
+if [[ ! -z ${NUMBER_OF_DAYS} ]]
+then
+	COUNTER=1
+
+	until [ ${COUNTER} -gt ${NUMBER_OF_DAYS} ] 
+	do
+		let NEG_COUNT=${COUNTER}-1
+		
+		tarFile=${TARGET_LOCATION}/KJ_$(date -v -${COUNTER}d '+%Y-%m-%d').tar.gz
+
+		if [[ -f ${tarFile} ]]
+                then
+                        rm ${tarFile}
+                fi
+
+		find ${SOURCE_LOCATION} ! -name '*.tar.gz' -type f \
+		-newermt $(date -v -${COUNTER}d '+%Y-%m-%d') ! -newermt $(date -v -${NEG_COUNT}d '+%Y-%m-%d') \
+		-exec tar -rvf ${tarFile} {} \;
+		
+		let COUNTER+=1
+	done
+else
+	next_day=$(date -j -f %Y-%m-%d -v+1d ${DATE_TO_ARCHIVE} +%Y-%m-%d)
+	find ${SOURCE_LOCATION} ! -name '*.tar.gz' -type f -newermt ${DATE_TO_ARCHIVE} ! -newermt ${next_day} -exec tar -rvfP ${TARGET_LOCATION}/KJ_${DATE_TO_ARCHIVE}.tar.gz {} \;
+fi
+
+# find ./Kieran_ipcamera -type f -newermt $(date -v -${COUNTER}d '+%Y-%m-%d') ! -newermt $(date -v -$(${COUNTER} - 1)d '+%Y-%m-%d') -exec tar -rvf ../KJ_$(date -v -1d '+%Y-%m-%d').tar.gz {} \;

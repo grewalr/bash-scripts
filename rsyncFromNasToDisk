@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+rsync -ave ssh --exclude ".AppleDB" --exclude ".DS_Store" --exclude "._.DS_Store" "grewalr@192.168.111.20:/mnt/grewal/images" "/Volumes/grewal_T5/NAS" 2>&1 | tee /Volumes/grewal_T5/NAS/logs/images.log &
+rsync -ave ssh --exclude ".AppleDB" --exclude ".DS_Store" --exclude "._.DS_Store" "grewalr@192.168.111.20:/mnt/grewal/RAW" "/Volumes/grewal_T5/NAS" 2>&1 | tee /Volumes/grewal_T5/NAS/logs/RAW.log &
+
+FAIL=0
+
+for job in `jobs -p`
+do
+  echo "JOB IS : $job"
+  wait $job || let "FAIL+=1"
+done
+
+echo "FAILED JOBS : $FAIL"
+
+if [ "$FAIL" == "0" ];
+then
+  echo "*** COMPLETED SUCCESSFULLY ***"
+else
+  echo "JOB FAILED"
+fi

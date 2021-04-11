@@ -1,0 +1,48 @@
+#!/usr/bin/env zsh
+
+function usage {
+    echo "Usage: $0 -o|--origin [origin-repo] -u|--upstream [upstream]";
+    echo "";
+    exit 1;
+}
+
+ORIGIN=X
+UPSTREAM=X
+
+if [[ ${1} == "" ]]
+then
+	usage
+fi
+
+
+while [[ $# -gt 0 ]]
+do
+    option="$1"
+
+    case ${option} in
+        -o|--origin)
+            ORIGIN=${2}
+            shift 2
+        ;;
+        -u|--upstream)
+            UPSTREAM=${2}
+            shift 2
+        ;;
+        *)
+            shift
+            usage
+        ;;
+    esac
+done
+
+git clone --recursive ${ORIGIN}
+cd $(echo ${ORIGIN} | sed 's/.*\///g' | sed 's/.git//g')
+git checkout -b test
+git branch -D master
+git remote add upstream ${UPSTREAM}
+git fetch --all --prune
+git branch --track master upstream/master
+git checkout master
+git branch -D test
+
+exit $?

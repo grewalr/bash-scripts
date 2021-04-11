@@ -1,0 +1,17 @@
+        #!/usr/bin/env bash
+set -x
+
+PROJECT_NAME=$1
+
+[ -z "$1" ] && echo "No project name!" && exit 1
+
+mvn archetype:generate -B \
+-DarchetypeGroupId=net.alchim31.maven \
+-DarchetypeArtifactId=scala-archetype-simple \
+-DarchetypeVersion=1.7 \
+-DgroupId=com.mcgrewal \
+-DartifactId=${PROJECT_NAME} \
+-Dversion=0.1-SNAPSHOT \
+-Dpackage=com.mcgrewal
+
+exit $?

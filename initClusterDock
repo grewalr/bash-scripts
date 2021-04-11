@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+## https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html
+sudo yum update -y
+sudo yum install -y docker
+sudo service docker start
+sudo usermod -a -G docker ec2-user
+
+## Cloudera Clusterdock image (https://hub.docker.com/r/cloudera/clusterdock/)
+docker pull cloudera/clusterdock
+
+# source the file into session:
+source /dev/stdin <<< "$(curl -sL http://tiny.cloudera.com/clusterdock.sh)"
+
+# run with configuration
+	
+clusterdock_run ./bin/start_cluster -n testing cdh --primary-node=master-1 --secondary-nodes='worker-{2..4}' --include-service-types=HDFS,YARN,ZOOKEEPER,HIVE,HUE,OOZIE,SENTRY,SPARK2_ON_YARN,IMPALA

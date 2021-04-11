@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+## Console Logger
+
+function debug {
+  logger_color "$COLOR_DEBUG" "$(date +"%F %T") $@"
+}
+
+function info {
+  logger_color "$COLOR_INFO" "$(date +"%F %T") $@"
+}
+
+function warn {
+  logger_color "$COLOR_WARN" "$(date +"%F %T") $@"
+}
+
+function error {
+  logger_color "$COLOR_ERROR" "$(date +"%F %T") $@"
+}
