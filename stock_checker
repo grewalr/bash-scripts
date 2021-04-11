@@ -9,6 +9,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:\
 /opt/X11/bin:/usr/local/opt/fzf/bin:$PATH
 
 RECIPIENTS="RickyGrewal8@gmail.com,grewalaruna@gmail.com"
+# RECIPIENTS="RickyGrewal8@gmail.com"
 ALDI_URL=https://www.aldi.co.uk/api/product/availability/710081460879600
 PURCHASE_DISABLED=$(curl -s ${ALDI_URL} | \
 jq ".availabilityPanel" | \
@@ -19,8 +20,11 @@ sed "s/\"//g" | \
 
 [ ${PURCHASE_DISABLED} == 'true' ] || {
   /usr/sbin/sendmail ${RECIPIENTS} <<EOF
-Subject:**IN STOCK** Gardenline Kamado Ceramic Egg BBQ
-From:ADMIN@grewal.aldi.stock
+Subject: **IN STOCK** Gardenline Kamado Ceramic Egg BBQ $(date +"%F %T")
+From: ADMIN@grewal.aldi.stock
+Content-Type: text/plain
+X-Priority: 1 (Highest)
+X-MSMail-Priority: High
 
 !! NOW IN STOCK !! -- https://www.aldi.co.uk/gardenline-kamado-ceramic-egg-bbq/p/710081460879600
 EOF
